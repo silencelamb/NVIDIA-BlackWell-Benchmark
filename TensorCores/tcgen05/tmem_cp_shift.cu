@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cuda.h>
+#include <cuda_runtime.h>
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 1000)
 #error "tcgen05 requires SM100+"
@@ -70,6 +71,12 @@ int main(int argc, char** argv) {
     int iters = 1024;
     if (argc >= 2) iters = atoi(argv[1]);
 
+    cudaDeviceProp prop{};
+    if (cudaGetDeviceProperties(&prop, 0) != cudaSuccess || prop.major < 10) {
+        fprintf(stderr, "tcgen05 requires SM100+ GPU; detected compute capability %d.%d\n", prop.major, prop.minor);
+        return 1;
+    }
+
     size_t bytes = 256 * 1024; // dummy buffer
     float* gmem = nullptr;
     float* gdst = nullptr;
@@ -83,7 +90,11 @@ int main(int argc, char** argv) {
     cudaMemset(d_out, 0, sizeof(unsigned long long));
 
     cp_shift_kernel<<<1, 32>>>(gmem, gdst, iters, d_out);
-    cudaDeviceSynchronize();
+    cudaError_t err = cudaDeviceSynchronize();
+    if (err != cudaSuccess) {
+        fprintf(stderr, "cp_shift kernel failed: %s\n", cudaGetErrorString(err));
+        return 1;
+    }
 
     unsigned long long cycles = 0;
     cudaMemcpy(&cycles, d_out, sizeof(unsigned long long), cudaMemcpyDeviceToHost);

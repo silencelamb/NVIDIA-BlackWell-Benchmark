@@ -1,11 +1,11 @@
+OFFLINE ?= 0
+# Default: PTX-only (driver JIT) to avoid ptxas rejecting tcgen05 on toolchains without tcgen05 support.
+# Set OFFLINE=1 to request cubin (requires nvcc/ptxas that understands tcgen05, e.g., CUDA 12.8+ with PTX ISA 9.0).
+ifeq ($(OFFLINE),1)
 GENCODE_SM100 := -gencode=arch=compute_100,code=\"sm_100,compute_100\"
-
-CUDA_MAJ := $(shell nvcc --version 2>/dev/null | grep release | sed 's/.*release \([0-9]*\)\.\([0-9]*\).*/\1/')
-CUDA_MIN := $(shell nvcc --version 2>/dev/null | grep release | sed 's/.*release \([0-9]*\)\.\([0-9]*\).*/\2/')
-CUDA_VER_OK := $(shell if [ -n "$(CUDA_MAJ)" ] && { [ $(CUDA_MAJ) -gt 12 ] || { [ $(CUDA_MAJ) -eq 12 ] && [ $(CUDA_MIN) -ge 8 ]; }; }; then echo yes; else echo no; fi)
-
-ifeq ($(CUDA_VER_OK),no)
-$(error tcgen05 requires CUDA >= 12.8 (PTX ISA 9.0) for tcgen05 instructions; detected $(CUDA_MAJ).$(CUDA_MIN))
+else
+GENCODE_SM100 := -gencode=arch=compute_100,code=compute_100
+$(info tcgen05: building PTX-only for sm_100 (driver JIT). Set OFFLINE=1 to emit cubin if your ptxas supports tcgen05.)
 endif
 
 CUOPTS = $(GENCODE_SM100)

@@ -1,0 +1,6 @@
+make: Entering directory '/root/NVIDIA-BlackWell-Benchmark/TensorCores/tcgen05'
+tcgen05: building PTX-only for sm_100 (driver JIT). Set OFFLINE=1 to emit cubin if your ptxas supports tcgen05.
+nvcc -gencode=arch=compute_100,code=compute_100 tmem_ldst.cu -o tmem_ldst
+make: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/TensorCores/tcgen05'
+Running tcgen05 ldst iters=1024 shape=0
+shape=16x64b iters=1024 cycles=0 avg=0.000 ns\n
