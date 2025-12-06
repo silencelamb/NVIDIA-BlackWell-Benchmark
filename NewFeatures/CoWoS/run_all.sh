@@ -1,11 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-# Simple wrapper to run remote latency and bandwidth tests.
+# Wrapper to run CoWoS latency/bandwidth tests.
 # Usage: ./run_all.sh [compute_dev] [mem_dev]
+# Default: single device (compute_dev == mem_dev == 0). If two GPUs with P2P, set mem_dev to the other GPU.
 
 compute_dev=${1:-0}
-mem_dev=${2:-1}
+mem_dev=${2:-$compute_dev}
 
 echo "Building CoWoS remote benchmarks..."
 make -C "$(dirname "$0")" -j

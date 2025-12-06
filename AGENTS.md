@@ -11,6 +11,7 @@
 - Regular units: `make -C RegularUnits` (outputs to `RegularUnits/bin`); individual targets: `make` inside each subfolder.
 - DPX/TMA/DSM: `make -C NewFeatures/DPX` or per-subdir `make`; run `NewFeatures/DPX/run_all.sh` when provided.
 - Tensor Cores: run the per-subdir scripts (e.g., `TensorCores/mma/run_all.sh`, `TensorCores/wgmma/throughput/run.sh`).
+- CoWoS: `make -C NewFeatures/CoWoS`，再 `NewFeatures/CoWoS/run_all.sh [compute_dev] [mem_dev]`（默认单卡 `0 0`；两卡 P2P 仅用于调试）。
 - TeBenchMark: follow `TeBenchMark/README.md` for Docker launch, then `python ./linear/linear.py` or `bash ./models/llama.sh`.
 
 ## Coding Style & Naming Conventions
@@ -35,7 +36,7 @@
 - 目标：将基准扩展到 Blackwell B200，覆盖新架构特性与延迟/吞吐变化。
 - 编译：各 `Makefile` 已加入 B200 对应 `-gencode`（`sm_100`，以 PTX 文档为准），保持向后兼容。
 - Tensor Core 第五代：根据 PTX 文档补充 B200 专属指令与数据类型路径，必要时新增 TensorCores kernel 与脚本。
-- 封装差异：B200 为 2×B100 CoWoS，HBM 与缓存层级延迟可能不同；在 RegularUnits/NewFeatures 中添加跨封装访存的延迟/带宽用例，输出到新的 B200 `log/` 目录。
+- 封装差异：B200 为 2×B100 CoWoS，HBM 与缓存层级延迟可能不同；已添加 CoWoS 跨封装访存用例（默认单卡验证，P2P 模式仅供多卡调试），建议将实测结果输出到新的 B200 `log/` 目录。
 - 文档：在 README/脚本注释标明 B200 依赖（CUDA/驱动版本、示例命令）并记录测试硬件。
 
 ## Security & Configuration Tips

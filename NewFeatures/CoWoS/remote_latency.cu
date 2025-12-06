@@ -1,16 +1,19 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cstdint>
 #include <cuda.h>
 
-// Simple pointer-chasing latency on remote memory (compute on compute_dev, memory on mem_dev).
-// Assumes peer access is available between the two devices (e.g., B200 dual-die package).
+// Pointer-chasing latency. Default runs on a single GPU (compute_dev == mem_dev).
+// If指定不同设备且支持 P2P，则测跨卡路径。
 
-__global__ void latency_kernel(const int* __restrict__ ptr, int iterations, unsigned long long* out_cycles) {
-    const int* p = ptr;
+__global__ void latency_kernel(const std::uintptr_t* __restrict__ ptr,
+                               int iterations,
+                               unsigned long long* out_cycles) {
+    const std::uintptr_t* p = ptr;
     unsigned long long start = clock64();
     #pragma unroll 1
     for (int i = 0; i < iterations; ++i) {
-        p = reinterpret_cast<const int*>(*p);
+        p = reinterpret_cast<const std::uintptr_t*>(p[0]);
     }
     unsigned long long end = clock64();
     out_cycles[0] = end - start;
@@ -27,13 +30,16 @@ static void check_cuda(cudaError_t err, const char* msg) {
 
 int main(int argc, char** argv) {
     int compute_dev = 0;
-    int mem_dev = 1;
+    int mem_dev = 0; // default single device
     int elements = 1 << 20; // size of pointer array
     int iterations = 1024;
 
     if (argc >= 3) {
         compute_dev = std::atoi(argv[1]);
         mem_dev = std::atoi(argv[2]);
+    } else if (argc == 2) {
+        compute_dev = std::atoi(argv[1]);
+        mem_dev = compute_dev;
     }
     if (argc >= 4) {
         iterations = std::atoi(argv[3]);
@@ -48,36 +54,38 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    int access_ab = 0, access_ba = 0;
-    check_cuda(cudaDeviceCanAccessPeer(&access_ab, compute_dev, mem_dev), "cudaDeviceCanAccessPeer ab");
-    check_cuda(cudaDeviceCanAccessPeer(&access_ba, mem_dev, compute_dev), "cudaDeviceCanAccessPeer ba");
-    if (!(access_ab && access_ba)) {
-        fprintf(stderr, "Peer access not available between %d and %d\n", compute_dev, mem_dev);
-        return EXIT_FAILURE;
+    bool use_peer = (compute_dev != mem_dev);
+    if (use_peer) {
+        int access_ab = 0, access_ba = 0;
+        check_cuda(cudaDeviceCanAccessPeer(&access_ab, compute_dev, mem_dev), "cudaDeviceCanAccessPeer ab");
+        check_cuda(cudaDeviceCanAccessPeer(&access_ba, mem_dev, compute_dev), "cudaDeviceCanAccessPeer ba");
+        if (!(access_ab && access_ba)) {
+            fprintf(stderr, "Peer access not available between %d and %d\n", compute_dev, mem_dev);
+            return EXIT_FAILURE;
+        }
+        check_cuda(cudaSetDevice(compute_dev), "set compute dev");
+        check_cuda(cudaDeviceEnablePeerAccess(mem_dev, 0), "enable peer mem->compute");
+        check_cuda(cudaSetDevice(mem_dev), "set mem dev");
+        check_cuda(cudaDeviceEnablePeerAccess(compute_dev, 0), "enable peer compute->mem");
     }
 
-    check_cuda(cudaSetDevice(compute_dev), "set compute dev");
-    check_cuda(cudaDeviceEnablePeerAccess(mem_dev, 0), "enable peer mem->compute");
-    check_cuda(cudaSetDevice(mem_dev), "set mem dev");
-    check_cuda(cudaDeviceEnablePeerAccess(compute_dev, 0), "enable peer compute->mem");
-
-    // allocate pointer list on mem_dev
+    // allocate pointer list on mem_dev (or same device)
     check_cuda(cudaSetDevice(mem_dev), "set mem dev (alloc)");
-    int* d_ptr_list = nullptr;
-    check_cuda(cudaMalloc(&d_ptr_list, elements * sizeof(int)), "cudaMalloc d_ptr_list");
+    std::uintptr_t* d_ptr_list = nullptr;
+    check_cuda(cudaMalloc(&d_ptr_list, elements * sizeof(std::uintptr_t)), "cudaMalloc d_ptr_list");
 
     // build pointer-chasing ring on host
-    int* h_ptr_list = (int*)malloc(elements * sizeof(int));
+    std::uintptr_t* h_ptr_list = (std::uintptr_t*)malloc(elements * sizeof(std::uintptr_t));
     if (!h_ptr_list) {
         fprintf(stderr, "Host malloc failed\n");
         return EXIT_FAILURE;
     }
     for (int i = 0; i < elements - 1; ++i) {
-        h_ptr_list[i] = (int)((uintptr_t)(d_ptr_list + i + 1));
+        h_ptr_list[i] = reinterpret_cast<std::uintptr_t>(d_ptr_list + i + 1);
     }
-    h_ptr_list[elements - 1] = (int)((uintptr_t)(d_ptr_list)); // wrap
+    h_ptr_list[elements - 1] = reinterpret_cast<std::uintptr_t>(d_ptr_list); // wrap
 
-    check_cuda(cudaMemcpy(d_ptr_list, h_ptr_list, elements * sizeof(int), cudaMemcpyHostToDevice),
+    check_cuda(cudaMemcpy(d_ptr_list, h_ptr_list, elements * sizeof(std::uintptr_t), cudaMemcpyHostToDevice),
                "cudaMemcpy ptr list");
     free(h_ptr_list);
 
@@ -86,8 +94,8 @@ int main(int argc, char** argv) {
     unsigned long long* d_out = nullptr;
     check_cuda(cudaMalloc(&d_out, sizeof(unsigned long long)), "cudaMalloc d_out");
 
-    // launch on compute_dev with pointer on mem_dev
-    latency_kernel<<<1, 1>>>(reinterpret_cast<const int*>(d_ptr_list), iterations, d_out);
+    // launch on compute_dev with pointer on mem_dev (or same device)
+    latency_kernel<<<1, 1>>>(d_ptr_list, iterations, d_out);
     check_cuda(cudaPeekAtLastError(), "kernel launch");
     check_cuda(cudaDeviceSynchronize(), "kernel sync");
 

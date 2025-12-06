@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cuda.h>
 
-// Remote bandwidth benchmark: kernel runs on compute_dev and streams from memory allocated on mem_dev.
+// Remote bandwidth benchmark: default single GPU (compute_dev == mem_dev); if different GPUs and P2P enabled, uses cross-GPU path.
 
 __global__ void bw_kernel(const float* __restrict__ src, float* __restrict__ dst, size_t elements) {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -26,13 +26,16 @@ static void check_cuda(cudaError_t err, const char* msg) {
 
 int main(int argc, char** argv) {
     int compute_dev = 0;
-    int mem_dev = 1;
+    int mem_dev = 0; // default single device
     size_t bytes = size_t(1) << 28; // 256 MiB default
     int iters = 50;
 
     if (argc >= 3) {
         compute_dev = std::atoi(argv[1]);
         mem_dev = std::atoi(argv[2]);
+    } else if (argc == 2) {
+        compute_dev = std::atoi(argv[1]);
+        mem_dev = compute_dev;
     }
     if (argc >= 4) {
         bytes = size_t(atoll(argv[3]));
@@ -50,20 +53,22 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    int access_ab = 0, access_ba = 0;
-    check_cuda(cudaDeviceCanAccessPeer(&access_ab, compute_dev, mem_dev), "cudaDeviceCanAccessPeer ab");
-    check_cuda(cudaDeviceCanAccessPeer(&access_ba, mem_dev, compute_dev), "cudaDeviceCanAccessPeer ba");
-    if (!(access_ab && access_ba)) {
-        fprintf(stderr, "Peer access not available between %d and %d\n", compute_dev, mem_dev);
-        return EXIT_FAILURE;
+    bool use_peer = (compute_dev != mem_dev);
+    if (use_peer) {
+        int access_ab = 0, access_ba = 0;
+        check_cuda(cudaDeviceCanAccessPeer(&access_ab, compute_dev, mem_dev), "cudaDeviceCanAccessPeer ab");
+        check_cuda(cudaDeviceCanAccessPeer(&access_ba, mem_dev, compute_dev), "cudaDeviceCanAccessPeer ba");
+        if (!(access_ab && access_ba)) {
+            fprintf(stderr, "Peer access not available between %d and %d\n", compute_dev, mem_dev);
+            return EXIT_FAILURE;
+        }
+        check_cuda(cudaSetDevice(compute_dev), "set compute dev");
+        check_cuda(cudaDeviceEnablePeerAccess(mem_dev, 0), "enable peer mem->compute");
+        check_cuda(cudaSetDevice(mem_dev), "set mem dev");
+        check_cuda(cudaDeviceEnablePeerAccess(compute_dev, 0), "enable peer compute->mem");
     }
 
-    check_cuda(cudaSetDevice(compute_dev), "set compute dev");
-    check_cuda(cudaDeviceEnablePeerAccess(mem_dev, 0), "enable peer mem->compute");
-    check_cuda(cudaSetDevice(mem_dev), "set mem dev");
-    check_cuda(cudaDeviceEnablePeerAccess(compute_dev, 0), "enable peer compute->mem");
-
-    // allocate on mem_dev
+    // allocate on mem_dev (or same device)
     check_cuda(cudaSetDevice(mem_dev), "set mem dev (alloc src)");
     float* d_src = nullptr;
     check_cuda(cudaMalloc(&d_src, bytes), "cudaMalloc src");
