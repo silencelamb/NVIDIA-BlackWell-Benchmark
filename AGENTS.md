@@ -12,6 +12,7 @@
 - DPX/TMA/DSM: `make -C NewFeatures/DPX` or per-subdir `make`; run `NewFeatures/DPX/run_all.sh` when provided.
 - Tensor Cores: run the per-subdir scripts (e.g., `TensorCores/mma/run_all.sh`, `TensorCores/wgmma/throughput/run.sh`).
 - CoWoS: `make -C NewFeatures/CoWoS`，再 `NewFeatures/CoWoS/run_all.sh [compute_dev] [mem_dev]`（默认单卡 `0 0`；两卡 P2P 仅用于调试）。
+- tcgen05（B200 第五代 Tensor Core/tmem）：`make -C TensorCores/tcgen05`，`TensorCores/tcgen05/run.sh {ldst|cp_shift|mma_ws}`（需 SM100+）。
 - TeBenchMark: follow `TeBenchMark/README.md` for Docker launch, then `python ./linear/linear.py` or `bash ./models/llama.sh`.
 
 ## Coding Style & Naming Conventions
