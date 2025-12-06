@@ -1,0 +1,92 @@
+Building RegularUnits...
+make: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits'
+mkdir -p /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+cd alu_lat_double;		make;	mv alu_lat_double /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_double'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" alu_lat_double.cu -o alu_lat_double -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_double'
+cd alu_lat_float;		make;	mv alu_lat_float /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_float'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" alu_lat_float.cu -o alu_lat_float -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_float'
+cd alu_lat_half;		make;	mv alu_lat_half /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_half'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" alu_lat_half.cu -o alu_lat_half -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_half'
+cd alu_lat_int32;		make;	mv alu_lat_int32 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_int32'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" alu_lat_int32.cu -o alu_lat_int32 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/alu_lat_int32'
+cd l1_bw_32f;			make;	mv l1_bw_32f /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_32f'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l1_bw_32f.cu -o l1_bw_32f -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_32f'
+cd l1_bw_64f; 			make;	mv l1_bw_64f /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_64f'
+nvcc --ptxas-options=-v -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l1_bw_64f.cu -o l1_bw_64f -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_64f'
+cd l1_bw_128;			make;	mv l1_bw_128 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_128'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l1_bw_128.cu -o l1_bw_128 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_bw_128'
+cd l1_lat; 				make;	mv l1_lat /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_lat'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l1_lat.cu -o l1_lat -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l1_lat'
+cd l2_bw_32f;  			make;	mv l2_bw_32f /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_32f'
+nvcc -Xptxas -dlcm=cg -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l2_bw_32f.cu -o l2_bw_32f -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_32f'
+cd l2_bw_64f; 			make;	mv l2_bw_64f /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_64f'
+nvcc -Xptxas -dlcm=cg -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l2_bw_64f.cu -o l2_bw_64f -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_64f'
+cd l2_bw_128; 			make;	mv l2_bw_128 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_128'
+nvcc --ptxas-options=-v -Xptxas -dlcm=cg -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l2_bw_128.cu -o l2_bw_128 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_bw_128'
+cd l2_lat; 				make;	mv l2_lat /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_lat'
+nvcc -Xptxas -dlcm=cg -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" l2_lat.cu -o l2_lat -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/l2_lat'
+cd MaxFlops; 			make;	mv MaxFlops /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" MaxFlops.cu -o MaxFlops -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops'
+cd MaxFlops_16; 		make;	mv MaxFlops_16 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_16'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" MaxFlops_16.cu -o MaxFlops_16 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_16'
+cd MaxFlops_64; 		make;	mv MaxFlops_64 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_64'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" MaxFlops_64.cu -o MaxFlops_64 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_64'
+cd MaxFlops_int32; 		make;	mv MaxFlops_int32 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_int32'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" MaxFlops_int32.cu -o MaxFlops_int32 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_int32'
+cd MaxFlops_int64; 		make;	mv MaxFlops_int64 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_int64'
+nvcc -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" MaxFlops_int64.cu -o MaxFlops_int64 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/MaxFlops_int64'
+cd mem_bw; 				make;	mv mem_bw /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/mem_bw'
+nvcc -Xptxas -dlcm=cg -Xptxas -dscm=wt  -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" mem_bw.cu -o mem_bw -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/mem_bw'
+cd mem_lat; 			make;	mv mem_lat /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/mem_lat'
+nvcc  -gencode=arch=compute_80,code=\"sm_80,compute_80\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" mem_lat.cu -o mem_lat -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/mem_lat'
+cd shared_lat; 			make;	mv shared_lat /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_lat'
+nvcc -Xptxas -dlcm=cv -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" shared_lat.cu -o shared_lat -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_lat'
+cd shared_bw; 			make;	mv shared_bw /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_bw'
+nvcc -Xptxas -dlcm=cv -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" shared_bw.cu -o shared_bw -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_bw'
+cd shared_bw_64; 		make;	mv shared_bw_64 /root/NVIDIA-BlackWell-Benchmark/RegularUnits/bin
+make[1]: Entering directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_bw_64'
+nvcc -Xptxas -dlcm=cv -Xptxas -dscm=wt -gencode=arch=compute_61,code=\"sm_61,compute_61\" -gencode=arch=compute_70,code=\"sm_70,compute_70\" -gencode=arch=compute_89,code=\"sm_89,compute_89\" -gencode=arch=compute_90,code=\"sm_90,compute_90\"  -gencode=arch=compute_100,code=\"sm_100,compute_100\" shared_bw_64.cu -o shared_bw_64 -I -L -lcudart
+make[1]: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits/shared_bw_64'
+make: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/RegularUnits'

@@ -1,0 +1,15 @@
+Building CoWoS remote benchmarks...
+make: Entering directory '/root/NVIDIA-BlackWell-Benchmark/NewFeatures/CoWoS'
+nvcc -gencode=arch=compute_90,code=\"sm_90,compute_90\" -gencode=arch=compute_100,code=\"sm_100,compute_100\" remote_latency.cu -o remote_latency -I -L -lcudart -lcuda
+nvcc -gencode=arch=compute_90,code=\"sm_90,compute_90\" -gencode=arch=compute_100,code=\"sm_100,compute_100\" remote_bw.cu -o remote_bw -I -L -lcudart -lcuda
+nvcc -gencode=arch=compute_90,code=\"sm_90,compute_90\" -gencode=arch=compute_100,code=\"sm_100,compute_100\" hsi_latency.cu -o hsi_latency -I -L -lcudart -lcuda
+make: Leaving directory '/root/NVIDIA-BlackWell-Benchmark/NewFeatures/CoWoS'
+Running remote latency (compute=0, mem=0)
+compute_dev=0 mem_dev=0 iterations=1024
+total_cycles=115668 avg_latency=57.48 ns (iterations=1024)
+Running remote bandwidth (compute=0, mem=0)
+compute_dev=0 mem_dev=0 bytes=268435456 iters=50
+avg_time=0.086 ms avg_bw=6223.79 GB/s (bytes=268435456 iters=50)
+Running HSI memmap latency (compute=0, mem=0)
+compute_dev=0 mem_dev=0 iterations=4096 elements=1048576 mode=memmap cache=cv
+total_cycles=1950893 avg_latency=242.39 ns (iterations=4096)

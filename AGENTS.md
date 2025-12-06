@@ -26,6 +26,7 @@
 - Functional runs: `./run.sh` or module-specific scripts on target GPUs; store outputs in `log/` when relevant.
 - Naming: keep `*_lat`, `*_bw`, `*throughput` for comparability.
 - Document assumptions (SM count, clocks, GPU model) via brief README updates or inline comments.
+- 日志：新增/修改的运行脚本应默认将输出通过 `tee` 保存到对应目录的 `log/` 下（带时间戳文件名），便于对比 B200/Hopper 数据。
 
 ## Commit & Pull Request Guidelines
 - Commits: short imperative summaries; scope prefix optional (history examples: “Update log (remove useless imformation)”, “init”).
@@ -39,6 +40,8 @@
 - Tensor Core 第五代：根据 PTX 文档补充 B200 专属指令与数据类型路径，必要时新增 TensorCores kernel 与脚本。
 - 封装差异：B200 为 2×B100 CoWoS，HBM 与缓存层级延迟可能不同；已添加 CoWoS 跨封装访存用例（默认单卡验证，P2P 模式仅供多卡调试），建议将实测结果输出到新的 B200 `log/` 目录。
 - 文档：在 README/脚本注释标明 B200 依赖（CUDA/驱动版本、示例命令）并记录测试硬件。
+- 参考资料：仓库根目录添加了 `ptx_isa_9.0.pdf`（tcgen05/PTX 文档）；在线版本见 https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tensorcore-5th-generation-instructions 。
+- tcgen05 默认输出 PTX（驱动 JIT），若工具链支持 tcgen05 可 `make OFFLINE=1` 生成 cubin；需要支持 tcgen05 指令的 nvcc/ptxas（建议 CUDA 12.8+/PTX ISA 9.0），否则只能依赖运行时 JIT。
 
 ## Security & Configuration Tips
 - 仅在隔离的实验主机或容器中运行；避免提交凭证或私有数据。

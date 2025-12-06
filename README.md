@@ -35,7 +35,7 @@ If you find this work useful, please cite this project and our papers.
 - Regular units: `make -C RegularUnits` (produces `RegularUnits/bin`).
 - DPX/TMA/DSM: `make -C NewFeatures/DPX` or per-subdir `make`; run scripts such as `NewFeatures/DPX/run_all.sh`.
 - Tensor Cores: per-directory scripts such as `TensorCores/mma/run_all.sh` or `TensorCores/wgmma/*/run.sh`.
-- tcgen05（B200 第五代 Tensor Core/tmem）：`make -C TensorCores/tcgen05`，按需运行 `TensorCores/tcgen05/run.sh {ldst|cp_shift|mma_ws}`（默认 f16，需 SM100+）。
+- tcgen05（B200 第五代 Tensor Core/tmem）：`make -C TensorCores/tcgen05`（默认生成 PTX 由驱动 JIT；若工具链支持 tcgen05，可 `make OFFLINE=1` 输出 cubin），按需运行 `TensorCores/tcgen05/run.sh {ldst|cp_shift|mma_ws}`（`mma_ws` 支持可选 kind 参数，默认 f16；需 SM100+，nvcc/ptxas 能识别 tcgen05 指令）。
 - TeBenchMark: follow `TeBenchMark/README.md` (Docker-based) and run `python ./linear/linear.py` or `bash ./models/llama.sh`.
 - CoWoS（B200 跨封装访存）: `make -C NewFeatures/CoWoS`，再运行 `NewFeatures/CoWoS/run_all.sh [compute_dev] [mem_dev]`（默认单卡 `0 0`；如有两卡且支持 P2P，可指定不同设备）。
 
@@ -44,6 +44,7 @@ If you find this work useful, please cite this project and our papers.
 - 已在各 Makefile 中加入 `sm_100` gencode 以覆盖 Blackwell B200；如需精确指令路径，请以 PTX 文档为准。
 - B200 的 Tensor Core 属于第五代，具有专属指令；相关 kernel/script 需按 PTX 文档补充或替换。
 - B200 封装为 2×B100 CoWoS，HBM/缓存层级的延迟与带宽可能与 Hopper 不同；建议增加跨封装访存延迟/带宽用例并记录到新的日志目录。
+- `NewFeatures/CoWoS/hsi_latency` 使用 cudaMemMap 固定分配在 mem_dev 上并在 compute_dev 上做 pointer-chasing，可用于观察 HSI 路径对全局内存访问延迟的影响。
 - 当前 CoWoS 基准默认单卡运行（compute_dev==mem_dev），仅用于流程验证；多卡 P2P 模式仅用于调试，无法等价于 B200 封装内路径。
 - tcgen05 测试仅在支持 SM100 的 GPU 上可编译运行；形状/描述符需依据 PTX 规范调整以覆盖更多数据类型与布局。
 
