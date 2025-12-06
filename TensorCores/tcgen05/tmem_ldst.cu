@@ -1,11 +1,7 @@
 #include <cstdio>
 #include <cuda.h>
 
-#ifndef __CUDA_ARCH__
-#define __CUDA_ARCH__ 0
-#endif
-
-#if __CUDA_ARCH__ < 1000
+#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 1000)
 #error "tcgen05 requires SM100+"
 #endif
 

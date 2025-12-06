@@ -1,16 +1,20 @@
 #include <cstdio>
 #include <cuda.h>
 
-#ifndef __CUDA_ARCH__
-#define __CUDA_ARCH__ 0
-#endif
-
-#if __CUDA_ARCH__ < 1000
+#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 1000)
 #error "tcgen05 requires SM100+"
 #endif
 
 // Minimal tcgen05.mma.ws test with tmem descriptors.
 // Usage: ./mma_ws_tmem [iters]
+// Build-time macro: MMA_KIND (default f16). Example: nvcc -DMMA_KIND=bf16 ...
+
+#ifndef MMA_KIND
+#define MMA_KIND f16
+#endif
+
+#define STR2(x) #x
+#define STR(x) STR2(x)
 
 __device__ __forceinline__ void tmem_alloc(uint32_t& taddr, int nCols) {
     asm volatile("tcgen05.alloc.cta_group.sync.aligned.shared::cta.b32 [%0], %1;" : "=r"(taddr) : "r"(nCols));
@@ -53,8 +57,8 @@ __global__ void mma_kernel(int iters, unsigned long long* out) {
 
     unsigned long long start = clock64();
     for (int i = 0; i < iters; ++i) {
-        // tcgen05.mma.ws.cta_group::1.kind::f16 [d-tmem], [a-tmem], b-desc, idesc, enable-input-d
-        asm volatile("tcgen05.mma.ws.cta_group::1.kind::f16 [ %0 ], [ %1 ], %2, %3, enable-input-d;"
+        // tcgen05.mma.ws.cta_group::1.kind::<MMA_KIND> [d-tmem], [a-tmem], b-desc, idesc, enable-input-d
+        asm volatile("tcgen05.mma.ws.cta_group::1.kind::" STR(MMA_KIND) " [ %0 ], [ %1 ], %2, %3, enable-input-d;"
                      :: "r"(desc_d), "r"(desc_a), "r"(desc_b), "r"(0));
     }
     tmem_commit();
